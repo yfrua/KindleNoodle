@@ -1406,12 +1406,6 @@
 
     <!-- Page 4: AI Daily Report -->
     <div id="page-4" class="page" style="display:none">
-      <div class="daily-page" id="daily-content">
-        <div class="daily-status">点击下方图标进入日报</div>
-      </div>
-    </div>
-
-    <div id="page-5" class="page" style="display:none">
       <div class="todo-page">
         <div class="todo-pager" id="todo-pager" style="display:none">
           <div class="daily-nav-btn disabled" id="todo-prev-btn" onclick="todoPrevPage()">‹ 上一页</div>
@@ -1421,6 +1415,12 @@
         <div class="todo-content" id="todo-content">
           <div class="todo-status">点击下方图标进入 TODO</div>
         </div>
+      </div>
+    </div>
+
+    <div id="page-5" class="page" style="display:none">
+      <div class="daily-page" id="daily-content">
+        <div class="daily-status">点击下方图标进入日报</div>
       </div>
     </div>
 
@@ -2472,11 +2472,11 @@
 
       forceEinkRefresh(function() {
         for (var i = 0; i <= 5; i++) {
-          document.getElementById('page-' + i).style.display = (i === 4) ? '' : 'none';
+          document.getElementById('page-' + i).style.display = (i === 5) ? '' : 'none';
         }
         document.getElementById('bottom-nav').style.display = 'none';
         document.getElementById('daily-nav').style.display = '';
-        currentTab = 4;
+        currentTab = 5;
 
         var todayStr = (function() {
           var d = new Date();
@@ -2629,7 +2629,6 @@
       s = s.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1');
       s = s.replace(/`([^`]*)`/g, '$1');
       s = s.replace(/\*\*([^*]+)\*\*/g, '$1');
-      s = s.replace(/\*([^*]+)\*/g, '$1');
       return s.replace(/\s+/g, ' ').trim();
     }
 
@@ -2696,7 +2695,7 @@
           for (var s = 0; s < todoState.sources.length; s++) todoFetchSource(s);
         } else if (xhr.status === 404) {
           todoState.loading = false;
-          showTodoStatus('未找到TODO配置文件');
+          showTodoStatus('未找到TODO配置文件', true);
         } else {
           todoState.loading = false;
           showTodoStatus('加载TODO配置失败，请检查网络', true);
@@ -2823,10 +2822,6 @@
           })(s);
           mEl.appendChild(errEl);
           items.push({ el: errEl, h: errEl.getBoundingClientRect().height + GAP, isHeader: false });
-        } else {
-          headEl.textContent = label + ' · 加载中...';
-          mEl.appendChild(headEl);
-          items.push({ el: headEl, h: headEl.getBoundingClientRect().height + GAP, isHeader: true });
         }
       }
       document.body.removeChild(mEl);

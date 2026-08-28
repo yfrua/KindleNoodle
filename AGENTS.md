@@ -32,7 +32,7 @@ python3 -m http.server 8000   # serve from repo root, then open http://localhost
 
 ## App structure
 
-Tabs are `#page-0`…`#page-5` in one file: 0 = clock (flip/module styles), 1 = pomodoro, 2 = noodle timer, 3 = reading (opens weread.qq.com), 4 = AI daily report (fetches `data/daily.json`, paginates into e-ink pages), 5 = TODO list (bottom-nav tab 5, see below). localStorage keys: `kindle_ob_done`, `kindle_noodle_clock_style`, `pomo_daily`, `ai_daily_read_*`.
+Tabs are `#page-0`…`#page-5` in one file: 0 = clock (flip/module styles), 1 = pomodoro, 2 = noodle timer, 3 = reading (opens weread.qq.com), 4 = TODO list (bottom-nav tab 4, see below), 5 = AI daily report (fetches `data/daily.json`, paginates into e-ink pages). Tab index always equals the page id (`switchTab(n)` shows `#page-n`); localStorage keys: `kindle_ob_done`, `kindle_noodle_clock_style`, `pomo_daily`, `ai_daily_read_*`.
 
 ## Data pipeline (AI daily report)
 
@@ -43,7 +43,7 @@ Tabs are `#page-0`…`#page-5` in one file: 0 = clock (flip/module styles), 1 = 
 - `data/archive/YYYY-MM-DD.json` and `data/dailies-index.json` are also fetched/committed but **not used by index.html yet** (staged for a future past-issues feature) — don't delete them.
 - All data JSON is single-line (no trailing newline), so `wc -l` reporting 0 is normal, not a broken file.
 
-## TODO list tab (page-5)
+## TODO list tab (bottom-nav tab 4, page-4)
 
 - Sources live in `data/todo-sources.json` (single-line array): `[{repo, branch, file, label?}]` — one entry per md file; `label` is the group header (falls back to repo name); order = display order. Adding a source = adding one entry, no code changes.
 - The app fetches sources directly at runtime: same-origin XHR for the config, then one XHR per source to `raw.githubusercontent.com/<repo>/<branch>/<file>` (path segments URL-encoded; raw sends `Access-Control-Allow-Origin: *`). Fetch fires on every tab entry; no caching. Per-source failure shows a tappable retry row instead of killing the whole list.
