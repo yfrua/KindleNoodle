@@ -4,7 +4,8 @@
 
 A single-file web app (`index.html`, ~2900 lines, all HTML/CSS/JS inline) for the
 Kindle Paperwhite's e-ink browser. No build system, no package.json, no tests, no
-lint. Deployed via GitHub Pages (`main` branch, `CNAME` = kindlenoodle.com).
+lint. This is a fork of `ZH-Labs/KindleNoodle`, deployed via GitHub Pages at
+`https://yfrua.github.io/KindleNoodle/` (Pages source: `main` branch, root).
 
 ## Verify changes
 
@@ -37,16 +38,14 @@ Tabs are `#page-0`…`#page-5` in one file: 0 = clock (flip/module styles), 1 = 
 ## Data pipeline (AI daily report)
 
 - The app reads only `data/daily.json` (schema: `{date, attribution, lead, sections:[{label, items:[{title, summary, sourceUrl, sourceName, permalink, attribution}]}], flashes}`).
-- `.github/workflows/fetch-aihot.yml` is `workflow_dispatch` only — it is triggered daily (08:15 Beijing) by an external cron-job.org, not by GitHub's own cron. Don't add a `schedule:` trigger.
-- The workflow's curl flags (`--speed-time/--speed-limit/--retry…`) and the non-browser User-Agent are deliberate workarounds for AI HOT's tarpit edge protection — don't simplify or remove them.
-- The workflow commits `data/` as `github-actions[bot]` ("chore: update AI HOT daily …").
-- `data/archive/YYYY-MM-DD.json` and `data/dailies-index.json` are also fetched/committed but **not used by index.html yet** (staged for a future past-issues feature) — don't delete them.
+- This fork does not fetch AI HOT itself: `.github/workflows/sync-upstream.yml` daily-merges `upstream/main` (ZH-Labs/KindleNoodle, where the fetch workflow and its external cron-job.org trigger live) into this repo. Don't hand-edit `data/` here — local changes break the clean daily merge.
+- `data/archive/YYYY-MM-DD.json` and `data/dailies-index.json` are also committed by upstream but **not used by index.html yet** (staged for a future past-issues feature) — don't delete them.
 - All data JSON is single-line (no trailing newline), so `wc -l` reporting 0 is normal, not a broken file.
 
 ## TODO list tab (bottom-nav tab 4, page-4)
 
 - Sources live in `data/todo-sources.json` (single-line array): `[{repo, branch, file, label?}]` — one entry per md file; `label` is the group header (falls back to repo name); order = display order. Adding a source = adding one entry, no code changes.
 - The app fetches sources directly at runtime: same-origin XHR for the config, then one XHR per source to `raw.githubusercontent.com/<repo>/<branch>/<file>` (path segments URL-encoded; raw sends `Access-Control-Allow-Origin: *`). Fetch fires on every tab entry; no caching. Per-source failure shows a tappable retry row instead of killing the whole list.
-- The CI-pipeline pattern (like fetch-aihot) is the agreed FALLBACK if direct fetch proves unreliable on real Kindles — not implemented; don't add it preemptively.
+- The CI-pipeline pattern (commit fetched data into the repo, as upstream's daily `data/` commits do) is the agreed FALLBACK if direct fetch proves unreliable on real Kindles — not implemented; don't add it preemptively.
 - Parser (`todoExtract`) scans only the first level-1 `# TODO` heading up to the next level-1 `#` heading (`##` inside stays in scope). It emits every unchecked `- [ ]` task plus its nearest enclosing TASK line as parent context (checked parents included, rendered as plain text); plain note lines are skipped when resolving parents and never displayed.
 - `NAV_LEFT` has one entry per bottom-nav icon (5 entries; the AI-daily icon lives in the separate right card). Adding another tab means recomputing those positions (bar centers under each 56px icon) and bumping the `page-0..5` loops in `switchTab`/`enterDailyMode`/`exitDailyMode`.
