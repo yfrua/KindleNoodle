@@ -37,10 +37,16 @@ Tabs are `#page-0`…`#page-5` in one file: 0 = clock (flip/module styles), 1 = 
 
 ## Data pipeline (AI daily report)
 
-- The app reads only `data/daily.json` (schema: `{date, attribution, lead, sections:[{label, items:[{title, summary, sourceUrl, sourceName, permalink, attribution}]}], flashes}`).
+- The app reads `data/daily.json` for today's issue (schema: `{date, attribution, lead, sections:[{label, items:[{title, summary, sourceUrl, sourceName, permalink, attribution}]}], flashes}`) and, for the past-issues feature, `data/dailies-index.json` (last 30 issues: `{count, items:[{date, leadTitle, ...}]}`) and `data/archive/YYYY-MM-DD.json` (same schema as `daily.json`).
 - This fork does not fetch AI HOT itself: `.github/workflows/sync-upstream.yml` daily-merges `upstream/main` (ZH-Labs/KindleNoodle, where the fetch workflow and its external cron-job.org trigger live) into this repo. Don't hand-edit `data/` here — local changes break the clean daily merge.
-- `data/archive/YYYY-MM-DD.json` and `data/dailies-index.json` are also committed by upstream but **not used by index.html yet** (staged for a future past-issues feature) — don't delete them.
+- `data/archive/YYYY-MM-DD.json` and `data/dailies-index.json` are committed by upstream and are read by the past-issues feature — don't delete them.
 - All data JSON is single-line (no trailing newline), so `wc -l` reporting 0 is normal, not a broken file.
+
+## Past issues (往期日报) — inside daily mode (page-5)
+
+- `dailyState.mode`: `'today'` | `'list'` | `'past'`. Entry = `往期日报 ›` row, the **last TOC item** built by `buildDailyPages()` (so it participates in TOC pagination). Re-entering daily mode (`enterDailyMode`) always calls `restoreDailyToday()` — today's data/pages are stashed (`stashDailyToday`) and swapped back, so returning never re-fetches.
+- Issue list (`openDailyList` → `fetchDailyIndex` → `buildListPages`): one XHR to `data/dailies-index.json` (10s timeout, cache-buster, cached in `dailyState.listIndex` for the session); if today's date is missing, today's row is prepended from the already-fetched `daily.json` (marked `今日`). Rows = date + `leadTitle`; failure shows a tappable 重试 row (`showDailyStatus(msg, true, retryFn)` — third arg overrides the default retry).
+- Reading a past issue (`openPastIssue`): one XHR to `data/archive/<date>.json`, cached in `dailyState.pastCache`; reuses `buildDailyPages()` unchanged (same schema, header already shows the issue's date). Home button (`dailyGoHome`) in `'past'` mode returns to the list; in `'list'` mode re-renders the list. No prefetch, no new tab, no dock/nav changes.
 
 ## TODO list tab (bottom-nav tab 4, page-4)
 
