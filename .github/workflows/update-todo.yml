@@ -21,7 +21,87 @@ jobs:
       - name: Build TODO cache
         run: |
           python3 - <<'PYEOF'
-          import json, urllib.request, urllib.parse, datetime
+          import json, re, html, urllib.request, urllib.parse, datetime
+
+          # LaTeX command -> Unicode approximation. Unknown commands are left
+          # as raw text so nothing silently disappears.
+          MATH_MAP = {
+              'to': '\u2192', 'rightarrow': '\u2192', 'leftarrow': '\u2190',
+              'Rightarrow': '\u21d2', 'Leftarrow': '\u21d0', 'mapsto': '\u21a6',
+              'leftrightarrow': '\u2194', 'Leftrightarrow': '\u21d4',
+              'alpha': '\u03b1', 'beta': '\u03b2', 'gamma': '\u03b3',
+              'delta': '\u03b4', 'epsilon': '\u03b5', 'varepsilon': '\u03b5',
+              'zeta': '\u03b6', 'eta': '\u03b7', 'theta': '\u03b8',
+              'vartheta': '\u03d1', 'iota': '\u03b9', 'kappa': '\u03ba',
+              'lambda': '\u03bb', 'mu': '\u03bc', 'nu': '\u03bd', 'pi': '\u03c0',
+              'rho': '\u03c1', 'varrho': '\u03f1', 'sigma': '\u03c3',
+              'tau': '\u03c4', 'upsilon': '\u03c5', 'phi': '\u03d5',
+              'varphi': '\u03c6', 'chi': '\u03c7', 'psi': '\u03c8',
+              'omega': '\u03c9', 'Gamma': '\u0393', 'Delta': '\u0394',
+              'Theta': '\u0398', 'Lambda': '\u039b', 'Xi': '\u039e',
+              'Pi': '\u03a0', 'Sigma': '\u03a3', 'Upsilon': '\u03a5',
+              'Phi': '\u03a6', 'Psi': '\u03a8', 'Omega': '\u03a9',
+              'pm': '\u00b1', 'mp': '\u2213', 'times': '\u00d7', 'div': '\u00f7',
+              'cdot': '\u22c5', 'le': '\u2264', 'leq': '\u2264', 'ge': '\u2265',
+              'geq': '\u2265', 'ne': '\u2260', 'neq': '\u2260', 'approx': '\u2248',
+              'equiv': '\u2261', 'sim': '\u223c', 'propto': '\u221d',
+              'infty': '\u221e', 'partial': '\u2202', 'nabla': '\u2207',
+              'in': '\u2208', 'notin': '\u2209', 'subset': '\u2282',
+              'supset': '\u2283', 'cup': '\u222a', 'cap': '\u2229',
+              'sum': '\u2211', 'prod': '\u220f', 'int': '\u222b',
+              'ldots': '\u2026', 'cdots': '\u22ef', 'dots': '\u2026',
+              '%': '%', '&': '&', '_': '_', '#': '#', '$': '$',
+              '{': '{', '}': '}',
+          }
+
+          def latex_to_unicode(s):
+              s = re.sub(r'\\bar\{([^}]*)\}', lambda m: m.group(1) + '\u0304', s)
+              def rep(m):
+                  cmd = m.group(1)
+                  return MATH_MAP.get(cmd, '\\' + cmd)
+              return re.sub(r'\\([a-zA-Z]+|.)', rep, s)
+
+          def math_span(s):
+              return '<span style="font-style:italic">' + latex_to_unicode(s) + '</span>'
+
+          # Only http(s) links pass through as absolute urls; everything else is
+          # treated as a vault-relative path so javascript:/data: hrefs can't pass.
+          def resolve_url(url, repo, branch):
+              u = url.strip()
+              if u.startswith('http://') or u.startswith('https://'):
+                  return u
+              return 'https://github.com/%s/blob/%s/%s' % (repo, branch, u.lstrip('/'))
+
+          def render_inline(s, repo, branch):
+              s = html.escape(s, quote=True)
+              s = re.sub(r'!\[[^\]]*\]\([^)]*\)', ' ', s)
+              stashed = []
+              def stash(frag):
+                  stashed.append(frag)
+                  return '\ue000%d\ue001' % (len(stashed) - 1)
+              s = re.sub(r'`([^`]+)`',
+                         lambda m: stash('<span style="font-family:monospace">%s</span>' % m.group(1)),
+                         s)
+              s = re.sub(r'\[([^\]]+)\]\(([^)]+)\)',
+                         lambda m: stash('<a href="%s" target="_blank" rel="noopener">%s</a>'
+                                         % (resolve_url(m.group(2), repo, branch), m.group(1))),
+                         s)
+              s = re.sub(r'\*\*([^*]+)\*\*', r'<b>\1</b>', s)
+              s = re.sub(r'\$\$([^$]+)\$\$', lambda m: math_span(m.group(1)), s)
+              s = re.sub(r'\$([^$]+)\$', lambda m: math_span(m.group(1)), s)
+              return re.sub('\ue000(\\d+)\ue001', lambda m: stashed[int(m.group(1))], s)
+
+          # Task-line structure (indent, marker, checkbox) is preserved verbatim
+          # so the client-side todoExtract parse keeps working on rendered md.
+          TASK_RE = re.compile(r'^(\s*)([-*+])(\s+)\[([ xX])\]\s*(.*)$')
+
+          def render_md_line(line, repo, branch):
+              m = TASK_RE.match(line)
+              if m:
+                  head = m.group(1) + m.group(2) + m.group(3) + '[' + m.group(4) + ']'
+                  text = m.group(5)
+                  return head + (' ' + render_inline(text, repo, branch) if text else '')
+              return render_inline(line, repo, branch)
 
           with open('data/todo-sources.json', encoding='utf-8') as f:
               cfgs = json.load(f)
@@ -35,17 +115,20 @@ jobs:
               url = 'https://raw.githubusercontent.com/%s/%s/%s' % (cfg['repo'], branch, path)
               entry = {'repo': cfg['repo'], 'branch': branch, 'file': cfg['file']}
               if cfg.get('label'):
-                  entry['label'] = cfg['label']
+                  entry['label'] = cfg.get('label')
               try:
                   req = urllib.request.Request(url, headers={'User-Agent': 'kindlenoodle-todo-cache'})
                   with urllib.request.urlopen(req, timeout=15) as resp:
-                      entry['md'] = resp.read().decode('utf-8')
+                      raw = resp.read().decode('utf-8')
+                      entry['md'] = '\n'.join(render_md_line(l, cfg['repo'], branch)
+                                              for l in re.split(r'\r?\n', raw))
               except Exception as e:
                   entry['error'] = str(e) or e.__class__.__name__
               sources.append(entry)
 
           now = datetime.datetime.utcnow()
           cache = {
+              'v': 2,
               'generatedAt': now.strftime('%Y-%m-%dT%H:%M:%SZ'),
               'generatedAtMs': int((now - datetime.datetime(1970, 1, 1)).total_seconds() * 1000),
               'sources': sources,
