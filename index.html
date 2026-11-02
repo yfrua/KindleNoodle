@@ -1027,6 +1027,7 @@
       -webkit-flex-shrink: 0; flex-shrink: 0;
     }
     .todo-task-done { color: #999; }
+    .todo-task a { color: inherit; text-decoration: underline; }
     .todo-src-note {
       font-size: 24px; color: #999; padding: 14px 0 0;
       -webkit-flex-shrink: 0; flex-shrink: 0;
@@ -3090,9 +3091,10 @@
     var TODO_CACHE_URL = './data/todo-cache.json';
 
     var todoState = {
-      sources: [],   /* cache entries: [{repo,branch,file,label,md,error}] */
+      sources: [],   /* cache entries: [{repo,branch,file,label,md?,error?}] */
       pages: [], currentPage: 0, totalPages: 0,
-      loading: false, generatedAtMs: 0
+      loading: false, generatedAtMs: 0,
+      v: 0           /* cache format version; 2 = md task lines are CI-rendered HTML */
     };
 
     function todoCleanText(s) {
@@ -3105,8 +3107,10 @@
 
     /* Unfinished tasks of the level-1 `# TODO` section plus all their ancestor
        task lines, in source order with nesting depth; fully-done subtrees are
-       omitted. */
-    function todoExtract(md) {
+       omitted. With isV2, task text arrives pre-rendered as HTML from the CI
+       cache and is kept verbatim (whitespace-normalized only); otherwise raw
+       markdown is cleaned by todoCleanText. */
+    function todoExtract(md, isV2) {
       var lines = md.split(/\r?\n/);
       var inSection = false;
       var all = [];     /* every task line: {indent, depth, done, keep, text} */
@@ -3122,7 +3126,7 @@
         if (!m) continue;
         var indent = m[1].replace(/\t/g, '    ').length;
         var done = m[2] !== ' ';
-        var text = todoCleanText(m[3]);
+        var text = isV2 ? m[3].replace(/\s+/g, ' ').trim() : todoCleanText(m[3]);
         while (stack.length > 0 && stack[stack.length - 1].indent >= indent) stack.pop();
         var keep = !done && !!text;
         if (keep) {
@@ -3166,6 +3170,7 @@
           }
           todoState.sources = cache.sources;
           todoState.generatedAtMs = cache.generatedAtMs || 0;
+          todoState.v = cache.v || 0;
           updateTodoStamp();
           renderTodoList();
         } else if (xhr.status === 404) {
@@ -3233,7 +3238,7 @@
         var headEl = document.createElement('div');
         headEl.className = 'todo-group-header';
         if (!st.error) {
-          var entries = todoExtract(st.md || '');
+          var entries = todoExtract(st.md || '', todoState.v >= 2);
           var open = 0;
           for (var n = 0; n < entries.length; n++) {
             if (!entries[n].done) open++;
@@ -3252,7 +3257,11 @@
               var lineEl = document.createElement('div');
               lineEl.className = entries[e].done ? 'todo-task todo-task-done' : 'todo-task';
               lineEl.style.marginLeft = (entries[e].depth * 28) + 'px';
-              lineEl.textContent = (entries[e].done ? '- ☑ ' : '- ☐ ') + entries[e].text;
+              if (todoState.v >= 2) {
+                lineEl.innerHTML = (entries[e].done ? '- ☑ ' : '- ☐ ') + entries[e].text;
+              } else {
+                lineEl.textContent = (entries[e].done ? '- ☑ ' : '- ☐ ') + entries[e].text;
+              }
               mEl.appendChild(lineEl);
               items.push({ el: lineEl, h: lineEl.getBoundingClientRect().height + GAP, isHeader: false });
               anyEntry = true;
