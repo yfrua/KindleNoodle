@@ -977,6 +977,111 @@
       -webkit-box-orient: vertical; -webkit-flex-direction: column; flex-direction: column;
       padding: 20px 48px 12px;
     }
+
+    /* ── Page 6: Viotina status (fork only) ───────────────── */
+    .viotina-page {
+      -webkit-box-flex: 1; -webkit-flex: 1; flex: 1;
+      min-height: 0; overflow: hidden;
+      display: -webkit-box; display: -webkit-flex; display: flex;
+      -webkit-box-orient: vertical; -webkit-flex-direction: column; flex-direction: column;
+      padding: 20px 48px 12px;
+    }
+    .viotina-head {
+      -webkit-flex-shrink: 0; flex-shrink: 0;
+      display: -webkit-box; display: -webkit-flex; display: flex;
+      -webkit-box-orient: horizontal; -webkit-flex-direction: row; flex-direction: row;
+      -webkit-box-align: baseline; -webkit-align-items: baseline; align-items: baseline;
+      -webkit-box-pack: justify; -webkit-justify-content: space-between; justify-content: space-between;
+      padding: 0 8px 14px; border-bottom: 1px solid #e0e0e0;
+    }
+    .viotina-title { font-size: 34px; font-weight: bold; }
+    .viotina-stamp { font-size: 24px; color: #999; }
+
+    .viotina-status-row {
+      -webkit-flex-shrink: 0; flex-shrink: 0;
+      display: -webkit-box; display: -webkit-flex; display: flex;
+      -webkit-box-align: center; -webkit-align-items: center; align-items: center;
+      padding: 18px 8px 0;
+      font-size: 36px; font-weight: bold;
+    }
+    .viotina-dot {
+      display: inline-block; width: 24px; height: 24px;
+      border: 3px solid #000; border-radius: 50%;
+      margin-right: 16px; -webkit-flex-shrink: 0; flex-shrink: 0;
+    }
+    .viotina-dot.on { background: #000; }
+    .viotina-dot.off { background: #fff; }
+    .viotina-dot.wait { background: #fff; border-style: dashed; }
+
+    .viotina-hint {
+      -webkit-flex-shrink: 0; flex-shrink: 0;
+      padding: 10px 8px 16px;
+      font-size: 24px; color: #444; line-height: 1.4;
+    }
+
+    .viotina-grid {
+      -webkit-flex-shrink: 0; flex-shrink: 0;
+      display: -webkit-box; display: -webkit-flex; display: flex;
+      -webkit-box-orient: horizontal; -webkit-flex-direction: row; flex-direction: row;
+      -webkit-flex-wrap: wrap; flex-wrap: wrap;
+      border: 1px solid #999;
+      margin: 0 8px 16px;
+    }
+    .viotina-cell {
+      width: 50%; padding: 14px 18px;
+      border-bottom: 1px solid #e0e0e0;
+      -webkit-box-sizing: border-box; box-sizing: border-box;
+    }
+    .viotina-cell:nth-child(odd) { border-right: 1px solid #e0e0e0; }
+    .viotina-cell:nth-child(3),
+    .viotina-cell:nth-child(4) { border-bottom: none; }
+    .viotina-k { display: block; font-size: 20px; color: #888; margin-bottom: 6px; }
+    .viotina-v { font-size: 28px; font-weight: bold; }
+
+    .viotina-qr {
+      -webkit-flex-shrink: 0; flex-shrink: 0;
+      margin: 0 8px 16px; padding: 18px;
+      border: 1px solid #999; text-align: center;
+    }
+    .viotina-qr-title { font-size: 26px; font-weight: bold; margin-bottom: 14px; }
+    #viotina-qr-img {
+      width: 340px; height: 340px;
+      image-rendering: pixelated;
+      -webkit-image-rendering: pixelated;
+      border: 1px solid #000;
+    }
+    .viotina-qr-meta { font-size: 20px; color: #888; margin-top: 12px; }
+
+    .viotina-chat {
+      -webkit-box-flex: 1; -webkit-flex: 1; flex: 1;
+      min-height: 0; overflow: hidden;
+      margin: 0 8px 12px;
+      border: 1px solid #999;
+      display: -webkit-box; display: -webkit-flex; display: flex;
+      -webkit-box-orient: vertical; -webkit-flex-direction: column; flex-direction: column;
+    }
+    .viotina-chat-head {
+      -webkit-flex-shrink: 0; flex-shrink: 0;
+      padding: 12px 18px; border-bottom: 1px solid #e0e0e0;
+      font-size: 24px; font-weight: bold;
+    }
+    .viotina-chat-count { font-weight: normal; font-size: 20px; color: #888; }
+    #viotina-chat-list { -webkit-box-flex: 1; -webkit-flex: 1; flex: 1; overflow: hidden; }
+    .viotina-chat-row { padding: 10px 18px; border-bottom: 1px solid #f0f0f0; font-size: 22px; line-height: 1.35; }
+    .viotina-chat-row:last-child { border-bottom: none; }
+    .viotina-chat-who { font-weight: bold; margin-right: 10px; }
+    .viotina-chat-when { font-size: 18px; color: #999; margin-left: 8px; }
+    .viotina-chat-msg { display: block; margin-top: 4px; color: #333; }
+    .viotina-chat-empty { padding: 18px; font-size: 22px; color: #888; }
+
+    .viotina-foot {
+      -webkit-flex-shrink: 0; flex-shrink: 0;
+      padding: 0 8px 4px; text-align: right;
+    }
+    .viotina-refresh-btn {
+      display: inline-block; padding: 10px 28px;
+      border: 1px solid #000; font-size: 24px; cursor: pointer;
+    }
     .todo-pager {
       -webkit-flex-shrink: 0; flex-shrink: 0;
       display: -webkit-box; display: -webkit-flex; display: flex;
@@ -1517,6 +1622,58 @@
       </div>
     </div>
 
+    <!-- Page 6: Viotina status (this fork only) -->
+    <div id="page-6" class="page" style="display:none">
+      <div class="viotina-page">
+        <div class="viotina-head">
+          <div class="viotina-title">Viotina</div>
+          <div class="viotina-stamp" id="viotina-stamp">读取中…</div>
+        </div>
+
+        <div class="viotina-status-row">
+          <span class="viotina-dot off" id="viotina-dot"></span>
+          <span class="viotina-status-text" id="viotina-status-text">读取中…</span>
+        </div>
+        <div class="viotina-hint" id="viotina-hint">正在获取状态…</div>
+
+        <div class="viotina-grid">
+          <div class="viotina-cell">
+            <span class="viotina-k">OneBot 3001</span>
+            <span class="viotina-v" id="viotina-p-onebot">—</span>
+          </div>
+          <div class="viotina-cell">
+            <span class="viotina-k">dsh web 3080</span>
+            <span class="viotina-v" id="viotina-p-dsh">—</span>
+          </div>
+          <div class="viotina-cell">
+            <span class="viotina-k">看门狗</span>
+            <span class="viotina-v" id="viotina-wd">—</span>
+          </div>
+          <div class="viotina-cell">
+            <span class="viotina-k">今天聊了</span>
+            <span class="viotina-v" id="viotina-today">—</span>
+          </div>
+        </div>
+
+        <div class="viotina-qr" id="viotina-qr" style="display:none">
+          <div class="viotina-qr-title">用手机 QQ 扫这个码</div>
+          <img id="viotina-qr-img" alt="登录二维码">
+          <div class="viotina-qr-meta" id="viotina-qr-meta"></div>
+        </div>
+
+        <div class="viotina-chat">
+          <div class="viotina-chat-head">最近的对话 <span class="viotina-chat-count" id="viotina-total"></span></div>
+          <div id="viotina-chat-list">
+            <div class="viotina-chat-empty">进入本页时加载</div>
+          </div>
+        </div>
+
+        <div class="viotina-foot">
+          <div class="viotina-refresh-btn" onclick="viotinaManualRefresh()">刷新状态</div>
+        </div>
+      </div>
+    </div>
+
   </div><!-- #page-wrapper -->
 
   <!-- Daily Mode Nav Bar -->
@@ -1654,6 +1811,13 @@
           <defs><clipPath id="clip0_2397_685"><rect width="56" height="56" fill="white"/></clipPath></defs>
         </svg>
       </div>
+      <!-- Viotina status icon (fork only) -->
+      <div class="nav-icon" id="nav-icon-6" onclick="switchTab(6)">
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8.33" y="8.33" width="39.34" height="39.34" rx="9" stroke="black" stroke-width="4.67" stroke-linejoin="round"/>
+          <path d="M15 28H21L25.5 19L31 37L35 28H41" stroke="black" stroke-width="4.67" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
     </div>
   </div>
 
@@ -1740,7 +1904,7 @@
       if (currentTab === 1 && tab !== 1) { pausePomoTimer(); }
       if (tab === 2 && noodleState === 1) { resumeNoodleTimer(); }
       forceEinkRefresh(function() {
-        for (var i = 0; i <= 5; i++) {
+        for (var i = 0; i <= 6; i++) {
           document.getElementById('page-' + i).style.display = (i === tab) ? '' : 'none';
         }
         document.getElementById('daily-nav').style.display = 'none';
@@ -1748,6 +1912,7 @@
         document.getElementById('nav-bar').style.left = navBarLeftFor(tab) + 'px';
         currentTab = tab;
         if (tab === 4) { fetchTodoData(); }
+        if (tab === 6) { viotinaLoadStatus(); }
       });
     }
 
@@ -2294,7 +2459,8 @@
       { tab: 2, name: '面条计时' },
       { tab: 3, name: '阅读' },
       { tab: 4, name: 'TODO' },
-      { tab: 5, name: 'AI 日报' }
+      { tab: 5, name: 'AI 日报' },
+      { tab: 6, name: 'Viotina' }
     ];
 
     function dockLoad() {
@@ -2325,6 +2491,12 @@
       }
       var dailyCard = document.getElementById('nav-card-daily');
       if (dailyCard) dailyCard.style.display = (dockHidden.indexOf(5) !== -1) ? 'none' : '';
+      var vioIcon = document.getElementById('nav-icon-6');
+      if (vioIcon) {
+        var vioOn = dockHidden.indexOf(6) === -1;
+        var cardOn = dockHidden.indexOf(5) === -1;
+        vioIcon.style.display = (vioOn && cardOn) ? '' : 'none';
+      }
       var bar = document.getElementById('nav-bar');
       if (bar && !dailyState.active) {
         var tab = currentTab <= 4 ? currentTab : 0;
@@ -2339,7 +2511,7 @@
     }
 
     function dockVisibleCount(list) {
-      return 6 - list.length;
+      return DOCK_ITEMS.length - list.length;
     }
 
     function dockToggle(tab) {
@@ -2384,13 +2556,13 @@
       forceEinkRefresh(function() {
         applyDockVisibility();
         if (jumpTo >= 0) {
-          for (var i = 0; i <= 5; i++) {
+          for (var i = 0; i <= 6; i++) {
             document.getElementById('page-' + i).style.display = (i === jumpTo) ? '' : 'none';
           }
           document.getElementById('nav-bar').style.left = navBarLeftFor(jumpTo) + 'px';
           currentTab = jumpTo;
         } else if (onlyDaily) {
-          for (var j = 0; j <= 5; j++) {
+          for (var j = 0; j <= 6; j++) {
             document.getElementById('page-' + j).style.display = (j === 5) ? '' : 'none';
           }
           document.getElementById('bottom-nav').style.display = 'none';
@@ -2414,7 +2586,7 @@
       if (dockHidden.indexOf(0) !== -1) {
         var first = dockFirstVisibleLeft();
         if (first === -1) {
-          for (var i = 0; i <= 5; i++) {
+          for (var i = 0; i <= 6; i++) {
             document.getElementById('page-' + i).style.display = (i === 5) ? '' : 'none';
           }
           document.getElementById('bottom-nav').style.display = 'none';
@@ -2763,7 +2935,7 @@
       }
 
       forceEinkRefresh(function() {
-        for (var i = 0; i <= 5; i++) {
+        for (var i = 0; i <= 6; i++) {
           document.getElementById('page-' + i).style.display = (i === 5) ? '' : 'none';
         }
         document.getElementById('bottom-nav').style.display = 'none';
@@ -2796,7 +2968,7 @@
         dailyState.previousTab = first;
       }
       forceEinkRefresh(function() {
-        for (var i = 0; i <= 5; i++) {
+        for (var i = 0; i <= 6; i++) {
           document.getElementById('page-' + i).style.display = (i === prevTab) ? '' : 'none';
         }
         document.getElementById('daily-nav').style.display = 'none';
@@ -3085,6 +3257,173 @@
       xhr.ontimeout = function() { dailyState.pastLoading = false; showDailyStatus('加载超时，请检查网络', true, function() { openPastIssue(date); }); };
       xhr.onerror  = function() { dailyState.pastLoading = false; showDailyStatus('网络连接失败，请检查网络后重试', true, function() { openPastIssue(date); }); };
       xhr.send();
+    }
+
+    /* ── Viotina status (fork only) ──────────────────────────
+       Talks to a Cloudflare quick tunnel that fronts the local
+       status service on the user's PC (scripts/kindle-server.mjs).
+       The tunnel URL changes every restart, so it lives in
+       data/viotina-tunnel.json — the local sync script rewrites that
+       file and pushes it. Everything here fails silently: a Kindle is
+       often offline and this page must never break the app. */
+    var VIOTINA_TUNNEL_URL = './data/viotina-tunnel.json';
+
+    var viotinaState = {
+      base: '',        /* resolved tunnel origin, e.g. https://x.trycloudflare.com */
+      loading: false,
+      lastStatus: null
+    };
+
+    /** Fetch the tunnel URL file, then the status JSON it points at. */
+    function viotinaLoadStatus() {
+      if (viotinaState.loading) return;
+      viotinaState.loading = true;
+      viotinaShowHint('正在获取状态…');
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', VIOTINA_TUNNEL_URL + '?t=' + Date.now(), true);
+      xhr.timeout = 10000;
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) return;
+        if (xhr.status !== 200) {
+          viotinaState.loading = false;
+          viotinaShowError('隧道地址文件读取失败（HTTP ' + xhr.status + '）');
+          return;
+        }
+        var cfg = null;
+        try { cfg = JSON.parse(xhr.responseText); } catch(e) {}
+        if (!cfg || !cfg.url) {
+          viotinaState.loading = false;
+          viotinaShowError('隧道地址文件格式不对');
+          return;
+        }
+        viotinaState.base = String(cfg.url).replace(/\/+$/, '');
+        viotinaFetchStatus();
+      };
+      xhr.ontimeout = function() { viotinaState.loading = false; viotinaShowError('读取隧道地址超时'); };
+      xhr.onerror   = function() { viotinaState.loading = false; viotinaShowError('读取隧道地址失败，检查网络'); };
+      xhr.send();
+    }
+
+    /** Hit <tunnel>/status.json. */
+    function viotinaFetchStatus() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', viotinaState.base + '/status.json?t=' + Date.now(), true);
+      xhr.timeout = 12000;
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) return;
+        viotinaState.loading = false;
+        if (xhr.status !== 200) {
+          viotinaShowError('状态接口无响应（HTTP ' + xhr.status + '）— 电脑可能没开机');
+          return;
+        }
+        var data = null;
+        try { data = JSON.parse(xhr.responseText); } catch(e) {}
+        if (!data) { viotinaShowError('状态数据解析失败'); return; }
+        viotinaState.lastStatus = data;
+        viotinaRender(data);
+      };
+      xhr.ontimeout = function() { viotinaState.loading = false; viotinaShowError('状态请求超时 — 电脑可能没开机'); };
+      xhr.onerror   = function() { viotinaState.loading = false; viotinaShowError('连不上电脑 — 检查隧道和网络'); };
+      xhr.send();
+    }
+
+    function viotinaManualRefresh() {
+      forceEinkRefresh(function() { viotinaLoadStatus(); });
+    }
+
+    function viotinaShowHint(msg) {
+      document.getElementById('viotina-status-text').textContent = msg;
+      document.getElementById('viotina-hint').textContent = '';
+      document.getElementById('viotina-dot').className = 'viotina-dot off';
+    }
+
+    function viotinaShowError(msg) {
+      document.getElementById('viotina-status-text').textContent = '读取失败';
+      document.getElementById('viotina-hint').textContent = msg;
+      document.getElementById('viotina-dot').className = 'viotina-dot off';
+      document.getElementById('viotina-stamp').textContent = '—';
+    }
+
+    /** Minutes-since-midnight formatting, UTC getters + tzOffsetMs (app convention). */
+    function viotinaClock(iso) {
+      if (!iso) return '—';
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return '—';
+      var ms = d.getTime() + tzOffsetMs;
+      var t = new Date(ms);
+      var h = t.getUTCHours(), m = t.getUTCMinutes();
+      return (h < 10 ? '0' + h : '' + h) + ':' + (m < 10 ? '0' + m : '' + m);
+    }
+
+    function viotinaRender(s) {
+      var dot = document.getElementById('viotina-dot');
+      var txt = document.getElementById('viotina-status-text');
+      var hint = document.getElementById('viotina-hint');
+
+      txt.textContent = s.statusText || s.status || '未知';
+      hint.textContent = s.hint || '';
+
+      if (s.status === 'online') dot.className = 'viotina-dot on';
+      else if (s.status === 'login-stuck') dot.className = 'viotina-dot wait';
+      else dot.className = 'viotina-dot off';
+
+      var p = s.ports || {};
+      var ob = p['onebot'] || {};
+      var ds = p['dsh-web'] || {};
+      document.getElementById('viotina-p-onebot').textContent = ob.listening ? '通' : '断';
+      document.getElementById('viotina-p-dsh').textContent = ds.listening ? '通' : '断';
+
+      var wd = s.watchdog || {};
+      document.getElementById('viotina-wd').textContent = wd.state || '—';
+
+      var dg = s.digest || {};
+      document.getElementById('viotina-today').textContent =
+        (dg.todayMessages != null) ? dg.todayMessages + ' 条' : '—';
+      document.getElementById('viotina-total').textContent =
+        (dg.totalMessages != null) ? '共 ' + dg.totalMessages + ' 条' : '';
+
+      document.getElementById('viotina-stamp').textContent = '更新于 ' + viotinaClock(s.generatedAt);
+
+      /* QR — only meaningful while the login is stuck */
+      var qrWrap = document.getElementById('viotina-qr');
+      var qr = s.qrcode || {};
+      if (s.status === 'login-stuck' && qr.available) {
+        qrWrap.style.display = '';
+        document.getElementById('viotina-qr-img').src =
+          viotinaState.base + '/qrcode-4x.png?t=' + Date.now();
+        document.getElementById('viotina-qr-meta').textContent = qr.ageMinutes != null
+          ? '二维码 ' + qr.ageMinutes + ' 分钟前生成'
+          : '';
+      } else {
+        qrWrap.style.display = 'none';
+      }
+
+      /* Recent chat */
+      var list = document.getElementById('viotina-chat-list');
+      var rows = dg.recent || [];
+      if (rows.length === 0) {
+        list.innerHTML = '<div class="viotina-chat-empty">还没有对话记录</div>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < rows.length; i++) {
+        var r = rows[i];
+        html += '<div class="viotina-chat-row">' +
+          '<span class="viotina-chat-who">' + viotinaEsc(r.role) + '</span>' +
+          '<span class="viotina-chat-when">' + viotinaEsc(r.at) + '</span>' +
+          '<span class="viotina-chat-msg">' + viotinaEsc(r.text) + '</span>' +
+          '</div>';
+      }
+      list.innerHTML = html;
+    }
+
+    function viotinaEsc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     }
 
     /* ── TODO List (CI-committed cache, data/todo-cache.json) ── */
